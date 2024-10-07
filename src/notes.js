@@ -1,4 +1,6 @@
-import { getDB, saveDB, insertDB } from './db';
+import { getDB, saveDB, insertDB } from './db.js';
+
+// We abstract the DB access another level to interact with the application and our DB access methods.
 
 export const newNote =  async(note, tags) => {
   const newNote = {

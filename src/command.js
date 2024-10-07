@@ -1,5 +1,10 @@
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { getAllNotes, newNote } from './notes.js';
+import { listAllNotes } from './utils/utls.js';
+
+
+// sets up commands to be used in the CLI tool.
 
 yargs(hideBin(process.argv))
   .command('new <note>', 'create a new note', yargs => {
@@ -7,8 +12,10 @@ yargs(hideBin(process.argv))
       type: 'string',
       description: 'create note'
     })
-  }, (argv) => {
-      console.log(argv.note)
+  }, async(argv) => {
+      const tags = argv.tags ? argv.tags.split(',') : [];
+      const note = newNote(argv.note, tags);
+      console.log('NOTE:: ', note);
   })
   .option('tags', {
     alias: 't',
@@ -16,7 +23,9 @@ yargs(hideBin(process.argv))
     description: 'tags to add to the note'
   })
   .command('all', 'get all notes', () => {}, async (argv) => {
-
+    const allNotes = await getAllNotes();
+    console.log('ALLLLLLLL NOTES: ', allNotes)
+    listAllNotes(allNotes);
   })
   .command('find <filter>', 'get matching notes', yargs => {
     return yargs.positional('filter', {
