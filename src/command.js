@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { getAllNotes, newNote } from './notes.js';
-import { listAllNotes } from './utils/utls.js';
+import { getAllNotes, newNote, findNotes, removeNote } from './notes.js';
+import { listNotes } from './utils/utls.js';
 
 
 // sets up commands to be used in the CLI tool.
@@ -25,7 +25,7 @@ yargs(hideBin(process.argv))
   .command('all', 'get all notes', () => {}, async (argv) => {
     const allNotes = await getAllNotes();
     console.log('ALLLLLLLL NOTES: ', allNotes)
-    listAllNotes(allNotes);
+    listNotes(allNotes);
   })
   .command('find <filter>', 'get matching notes', yargs => {
     return yargs.positional('filter', {
@@ -33,7 +33,8 @@ yargs(hideBin(process.argv))
       type: 'string'
     })
   }, async (argv) => {
-
+    const matches = await findNotes(argv.filter);
+    listNotes(matches)
   })
   .command('remove <id>', 'remove a note by id', yargs => {
     return yargs.positional('id', {
@@ -41,7 +42,8 @@ yargs(hideBin(process.argv))
       description: 'The id of the note you want to remove'
     })
   }, async (argv) => {
-
+    removeNote(argv.id);
+    console.log(`Note:${argv.id} was removed sucessfully!`)
   })
   .command('web [port]', 'launch website to see notes', yargs => {
     return yargs
