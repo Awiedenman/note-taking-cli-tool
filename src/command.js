@@ -1,10 +1,10 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { getAllNotes, newNote, findNotes, removeNote } from './notes.js';
+import { getAllNotes, newNote, findNotes, removeNote, removeAllNotes } from './notes.js';
 import { listNotes } from './utils/utls.js';
 
 
-// sets up commands to be used in the CLI tool.
+// Sets up commands to be used in the CLI tool;
 
 yargs(hideBin(process.argv))
   .command('new <note>', 'create a new note', yargs => {
@@ -42,21 +42,18 @@ yargs(hideBin(process.argv))
       description: 'The id of the note you want to remove'
     })
   }, async (argv) => {
-    removeNote(argv.id);
-    console.log(`Note:${argv.id} was removed sucessfully!`)
-  })
-  .command('web [port]', 'launch website to see notes', yargs => {
-    return yargs
-      .positional('port', {
-        describe: 'port to bind on',
-        default: 5000,
-        type: 'number'
-      })
-  }, async (argv) => {
+    const allNotes = await getAllNotes();
+    if (allNotes.find(note=> note.id === argv.id) ) {
+      await removeNote(argv.id);
+      console.log(`Note:${argv.id} was removed sucessfully!`) //fix this
+    } else {
+      console.log(`Note ID not found, please try again!`)
 
+    }
   })
   .command('clean', 'remove all notes', () => {}, async (argv) => {
-
+    await removeAllNotes();
+    console.log('DB reset')
   })
   .demandCommand(1) // must have 1 command
   .parse() // runs the command

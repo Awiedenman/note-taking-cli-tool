@@ -1,7 +1,5 @@
-// import { readFile, writeFile } from 'node:fs';
+// Access point for DB;
 import fs from 'node:fs/promises';
-
-// interacts with teh DB
 
 const DB_PATH = new URL( '../db.json', import.meta.url).pathname;
 
