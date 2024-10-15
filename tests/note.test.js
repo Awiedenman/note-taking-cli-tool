@@ -29,5 +29,31 @@ test('newNote: takes in a string and inserts it into db.json storage.', async() 
   const result = await newNote(mockNote.content, mockNote.tags);
   expect(result.content).toEqual(mockNote.content);
   expect(result.tags).toEqual(mockNote.tags);
-
 })
+
+test('getAllNotes returns all notes', async () => {
+  // ... existing code ...
+
+  const result = await getAllNotes();
+  expect(result).toEqual(expect.arrayContaining([
+    expect.objectContaining({
+      content: expect.any(String),
+      id: expect.any(Number),
+      tags: expect.arrayContaining([expect.any(String)])
+    })
+  ]));
+  expect(result.length).toBeGreaterThan(0);
+});
+
+test('removeNote does nothing if id is not found', async () => {
+  const notes = [
+    { id: 1, content: 'note 1' },
+    { id: 2, content: 'note 2' },
+    { id: 3, content: 'note 3' },
+  ];
+  saveDB.mockResolvedValue(notes);
+
+  const idToRemove = 4;
+  const result = await removeNote(idToRemove);
+  expect(result).toBeUndefined();
+});
