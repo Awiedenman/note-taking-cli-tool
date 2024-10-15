@@ -2,6 +2,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { getAllNotes, newNote, findNotes, removeNote, removeAllNotes } from './notes.js';
 import { listNotes } from './utils/utls.js';
+import { start } from './server.js';
 
 
 // Sets up commands to be used in the CLI tool;
@@ -54,6 +55,16 @@ yargs(hideBin(process.argv))
   .command('clean', 'remove all notes', () => {}, async (argv) => {
     await removeAllNotes();
     console.log('DB reset')
+  })
+  .command('web [port]', 'launch website to view notes', yargs => {
+    return yargs.positional('port', {
+      describe: 'port to bind on',
+      default: 4001,
+      type: 'number',
+    })
+  }, async(argv)=> {
+    const notes = await getAllNotes();
+    start(notes, argv.port)
   })
   .demandCommand(1) // must have 1 command
   .parse() // runs the command
